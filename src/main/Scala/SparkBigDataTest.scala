@@ -58,26 +58,26 @@ object SparkBigDataTest {
     println(" Nbr d'élements de mon rdd " + rdd_map.count())
 
     val rdd6 = rdd_trans.map(s => (s, s.length, s.contains("banane")))
-    //rdd6.foreach(l => println(l))
+    rdd6.foreach(l => println(l))
 
     val rdd7 = rdd6.map(x => (x._1.toUpperCase(), x._2, x._3))
-    //rdd7.foreach(l => print(l))
+    rdd7.foreach(l => print(l))
 
     val rdd8 = rdd6.map(x => (x._1.split(" "), 1))
-    // rdd8.foreach(l => println(l._1(0), l._2))
+    rdd8.foreach(l => println(l._1(0), l._2))
 
     val rdd_fm = rdd_trans.flatMap(x => x.split(" ")).map(x => (x, 1)).reduceByKey((x, y) => x + y)
-    //rdd_fm.foreach(l => println(l))
+    rdd_fm.foreach(l => println(l))
 
     val rdd_flitered = rdd_fm.filter(x => x._1.contains("banane"))
-    //rdd_flitered.foreach(x => println(x))
+    rdd_flitered.foreach(x => println(x))
 
-    //val rdd_reduced = rdd_fm.reduceByKey((x,y) => x + y)
-    //rdd_reduced.foreach(l => println(l))
-    /*
-      rdd_fm.cache()
-      rdd_fm.persist(StorageLevel.MEMORY_AND_DISK)
-      rdd_fm.unpersist() */
+    val rdd_reduced = rdd_fm.reduceByKey((x, y) => x + y)
+    rdd_reduced.foreach(l => println(l))
+
+    rdd_fm.cache()
+    //rdd_fm.persist(StorageLevel.MEMORY_AND_DISK)
+    //rdd_fm.unpersist()
 
     // rdd tO DataFrame
     import session_s.implicits._
