@@ -9,6 +9,38 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <spark.core.version>2.2.0</spark.core.version>
+        <spark.sql.version>2.2.0</spark.sql.version>
+        <spark.streaming.version>2.2.0</spark.streaming.version>
+        <scala.langage.version>2.11.8</scala.langage.version>
+        <scala.compiler.version>2.15.2</scala.compiler.version>
+        <spark.streaming.kafka.version>2.3.0</spark.streaming.kafka.version>
+        <spark.hive.version>2.4.4</spark.hive.version>
+        <log4j.version>2.13.3</log4j.version>
+        <junit.version>4.12</junit.version>
+        <scalatest.version>3.1.1</scalatest.version>
+        <spark.projet.base.version>2.2.0_0.7.4</spark.projet.base.version>
+        <kafka.client.version>2.1.0</kafka.client.version>
+        <twitter.hbc.client.version>2.2.0</twitter.hbc.client.version>
+        <twitter4j.version>4.0.4</twitter4j.version>
+        <spark.streaming.twitter.version>1.6.2</spark.streaming.twitter.version>
+        <mysql.jdbc.driver.version>8.0.22</mysql.jdbc.driver.version>
+        <postgre.jdbc.driver.version>42.3.1</postgre.jdbc.driver.version>
+        <microsoft.sqlserver.jdbc.driver.version>6.4.0.jre8</microsoft.sqlserver.jdbc.driver.version>
+        <hbase.client.version>2.2.6</hbase.client.version>
+        <hbase.spark.connector.version>1.0.0</hbase.spark.connector.version>
+        <hortonworks.hbase.version>1.1.1-2.1-s_2.11</hortonworks.hbase.version>
+        <cassandra.spark.connector.version>2.4.1</cassandra.spark.connector.version>
+        <elasticsearch.spark.connector.version>7.11.2</elasticsearch.spark.connector.version>
+        <commoons.http.client.version>3.1</commoons.http.client.version>
+        <jackson.databind.version>2.6.7.3</jackson.databind.version>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.spark</groupId>
@@ -65,18 +97,32 @@
             <version>2.14.0</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.scala-tools/maven-scala-plugin -->
-        <dependency>
-            <groupId>org.scala-tools</groupId>
-            <artifactId>maven-scala-plugin</artifactId>
-            <version>2.11</version>
-        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.spark/spark-hive -->
         <dependency>
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-hive_2.11</artifactId>
-            <version>2.4.4</version>
-            <scope>compile</scope>
+            <version>${spark.hive.version}</version>
+            <scope>provided</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql.jdbc.driver.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgre.jdbc.driver.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.microsoft.sqlserver/mssql-jdbc -->
+        <dependency>
+            <groupId>com.microsoft.sqlserver</groupId>
+            <artifactId>mssql-jdbc</artifactId>
+            <version>${microsoft.sqlserver.jdbc.driver.version}</version>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api -->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
@@ -105,9 +151,6 @@
         </plugins>
 
     </build>
-    <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
-    </properties>
+
 
 </project>

@@ -1,3 +1,7 @@
+import SparkBigDataTest.Session_Spark
+import org.apache.spark.rdd.RDD
+import org.apache.spark.sql.{DataFrame, SparkSession}
+
 import scala.tools.nsc.doc.model.Public
 import scala.collection.mutable._
 
@@ -26,6 +30,8 @@ object HelloWorldBigData {
   private val une_var_imm: String = "Apprentissage formation Big Data" // variable à portée privée
 
   def main(args: Array[String]): Unit = {
+    val sc = Session_Spark(true).sparkContext
+    val session_s = Session_Spark(true)
     var test_mu: Int = 15 // variable mutable
     test_mu = test_mu + 10
     println("Hello World: Mon premier programme en Scala!!!")
@@ -39,6 +45,16 @@ object HelloWorldBigData {
     testFor()
     collectionScala()
     collectionTuple()
+
+    val listOfNumbers: List[Int] = List(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+    val rdd: RDD[Int] = sc.parallelize(listOfNumbers)
+    rdd.foreach(number => println(number + ","))
+
+    listOfNumbers.zipWithIndex.foreach(print)
+
+    import session_s.implicits._
+    val df = sc.parallelize(listOfNumbers).toDF
+    df.filter(row => Integer.parseInt(row.toString()) % 2 == 0).show()
 
 
   }
@@ -79,7 +95,7 @@ object HelloWorldBigData {
     val liste_S: List[String] = List("paul", "jean", "pierre", "julien")
     val plage_v: List[Int] = List.range(1, 15, 2)
 
-    /*for (i <- liste_S){
+    /*for (i <- liste_S){ 1
       print(i)
     }*/
 
