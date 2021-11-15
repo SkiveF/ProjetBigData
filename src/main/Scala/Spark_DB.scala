@@ -34,7 +34,7 @@ object Spark_DB {
       .format("jdbc")
       .option("url", "jdbc:postgresql://127.0.0.1:5432/Spark_db")
       .option("user", "postgres")
-      .option("password", "originalH509!")
+      .option("password", "password")
       .option("dbtable", "(select state,city,sum(round(numunits * totalprice)) as total_amount from orders group by state,city) table_postgresql")
       .load()
 
