@@ -52,6 +52,7 @@ object SparkBigDataTest {
 
   def main(args: Array[String]): Unit = {
     val session_s = Session_Spark(true)
+    session_s.udf.register("valid_phone", valid_phoneUDF)
     /**
      * Dataframe: est un "dataset" organisé en colonnes nommées. C'est en réalité l'abstraction d'un RDD, sous forme de table équivalente à la table dans une base de données relationnelle ou un dataframe dans Python/R.
      * Techniquement, un data frame est une collection distribuée de données assise sur l'intersection du RDD et du SQL.
@@ -233,6 +234,19 @@ object SparkBigDataTest {
     phone_list.withColumn("test_phone", valid_phoneUDF(col("phone_number")))
       .show()
 
+
+    // hive
+    df_joinOrders.createOrReplaceTempView("orders")
+    val df_sql: DataFrame = session_s.sql("select state,city,sum(round(numunits * totalprice)) as total_amount from orders group by state,city")
+    //df_sql.show()
+
+    phone_list.createOrReplaceTempView("phone_table")
+    session_s.sql("select valid_phone(phone_number) as valid_phone from phone_table").show()
+
+    val df_hive = session_s.table("orders") // lire une table à partir du metastore Hive
+    df_sql.write.mode(SaveMode.Overwrite).saveAsTable("report_orders") // enregistrer et écrire un data frame dans les metastore Hive
+
+
   }
 
   def valid_phone(phone_to_test: String): Boolean = {
@@ -251,6 +265,7 @@ object SparkBigDataTest {
     }
     return result
   }
+
 
   def spark_hdfs(): Unit = {
 
@@ -283,6 +298,38 @@ object SparkBigDataTest {
     // copie des fichiers
     fs.copyFromLocalFile(local_path, dest_path)
     fs.copyToLocalFile(dest_path, local_path1)
+
+  }
+
+  /**
+   * fonction qui initialise et instancie une session spark
+   *
+   * @param env : c'est une variable qui indique l'environnement sur lequel notre application est déployée.
+   *            Si env = True, alors l'appli est déployée en local, sinon, elle est déployée sur un cluster
+   */
+  def Session_Spark(env: Boolean = true): SparkSession = {
+    try {
+      if (env == true) {
+        System.setProperty("hadoop.home.dir", "C:/Hadoop/")
+        sf = SparkSession.builder
+          .master("local[*]")
+          .config("spark.sql.crossJoin.enabled", "true")
+          //.enableHiveSupport()
+          .getOrCreate()
+      } else {
+        sf = SparkSession.builder
+          .appName("Mon application Spark")
+          .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
+          .config("spark.sql.crossJoin.enabled", "true")
+          //.enableHiveSupport()
+          .getOrCreate()
+      }
+    } catch {
+      case ex: FileNotFoundException => trace_log.error("Nous n'avons pas trouvé le winutils dans le chemin indiqué " + ex.printStackTrace())
+      case ex: Exception => trace_log.error("Erreur dans l'initialisation de la session Spark " + ex.printStackTrace())
+    }
+
+    return sf
 
   }
 
@@ -328,12 +375,12 @@ object SparkBigDataTest {
 
     // création d'un RDD à partir d'une source de donées
     val rdd4 = sc.textFile("D:/Spark_Scala_Formation/testtRDD.txt")
-     println("Lecture du fichier RDD4")
-     rdd4.foreach{l=>println(l)}
+    println("Lecture du fichier RDD4")
+    rdd4.foreach { l => println(l) }
 
-     val rdd5 =sc.textFile("D:\\Spark_Scala_Formation\\*")
+    val rdd5 = sc.textFile("D:\\Spark_Scala_Formation\\*")
     println("Lecture du fichier RDD5")
-    rdd5.foreach { l => println(l)}
+    rdd5.foreach { l => println(l) }
 
 
     // transformation RDD
@@ -373,37 +420,6 @@ object SparkBigDataTest {
     val df: DataFrame = rdd_fm.toDF("texte", "valeur")
     // df.show(50)
 
-  }
-
-  /**
-   * fonction qui initialise et instancie une session spark
-   *
-   * @param env : c'est une variable qui indique l'environnement sur lequel notre application est déployée.
-   *            Si env = True, alors l'appli est déployée en local, sinon, elle est déployée sur un cluster
-   */
-  def Session_Spark(env: Boolean = true): SparkSession = {
-    try {
-      if (env == true) {
-        System.setProperty("hadoop.home.dir", "C:/Hadoop/")
-        sf = SparkSession.builder
-          .master("local[*]")
-          .config("spark.sql.crossJoin.enabled", "true")
-          //    .enableHiveSupport()
-          .getOrCreate()
-      } else {
-        sf = SparkSession.builder
-          .appName("Mon application Spark")
-          .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
-          .config("spark.sql.crossJoin.enabled", "true")
-          .enableHiveSupport()
-          .getOrCreate()
-      }
-    } catch {
-      case ex: FileNotFoundException => trace_log.error("Nous n'avons pas trouvé le winutils dans le chemin indiqué " + ex.printStackTrace())
-      case ex: Exception => trace_log.error("Erreur dans l'initialisation de la session Spark " + ex.printStackTrace())
-    }
-
-    return sf
 
   }
 
