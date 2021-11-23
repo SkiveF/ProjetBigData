@@ -122,6 +122,24 @@
             <artifactId>mssql-jdbc</artifactId>
             <version>${microsoft.sqlserver.jdbc.driver.version}</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.hbase/hbase-client -->
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-client</artifactId>
+            <version>${hbase.client.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.hbase.connectors.spark/hbase-spark -->
+        <dependency>
+            <groupId>org.apache.hbase.connectors.spark</groupId>
+            <artifactId>hbase-spark</artifactId>
+            <version>${hbase.spark.connector.version}</version>
+        </dependency>
+        <!-- shc-core hortonwork hbase connector for Spark -->
+        <dependency>
+            <groupId>com.hortonworks</groupId>
+            <artifactId>shc-core</artifactId>
+            <version>${hortonworks.hbase.version}</version>
+        </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api -->
         <dependency>
