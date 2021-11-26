@@ -1,5 +1,3 @@
-
-
 import org.apache.log4j.{LogManager, Logger}
 import org.apache.spark.SparkConf
 import org.apache.spark.rdd.RDD
@@ -53,6 +51,7 @@ object SparkBigDataTest {
   def main(args: Array[String]): Unit = {
     val session_s = Session_Spark(true)
     session_s.udf.register("valid_phone", valid_phoneUDF)
+
     /**
      * Dataframe: est un "dataset" organisé en colonnes nommées. C'est en réalité l'abstraction d'un RDD, sous forme de table équivalente à la table dans une base de données relationnelle ou un dataframe dans Python/R.
      * Techniquement, un data frame est une collection distribuée de données assise sur l'intersection du RDD et du SQL.
@@ -62,6 +61,8 @@ object SparkBigDataTest {
      * les tables Hive, les tables de bases de données relationnelles (MySQL, PostGre, etc...),
      * les SGBD NoSQL (HBase, cassandra, elasticsearch, etc.), et les RDD existants.
      */
+    manipulation_rdd()
+
     val df_test = session_s.read
       .format("com.databricks.spark.csv")
       .option("delimiter", ",")
@@ -351,6 +352,13 @@ object SparkBigDataTest {
 
     sc.setLogLevel("OFF")
 
+    val text: String = "if debugging is the process of removing software bugs, then programming must be the process of putting then in"
+    val rdd_test_skill = sc.parallelize(text.replaceAll("""[\p{Punct}&&[^.]]""", "").split("\\s+"))
+    //rdd_test_skill.zip(sc.parallelize(Seq(1))).reduceByKey(_+_).foreach(println)
+    //rdd_test_skill.zipWithIndex.reduceByKey((a:String, b:String)=> a.equals(b))
+    rdd_test_skill.distinct.foreach(println)
+
+
     val rdd_sf: RDD[String] = sc.parallelize(List("Alain", "skive", "julien", "jacques"))
     rdd_sf.foreach { l => println(l) }
     //println("test")
@@ -418,8 +426,7 @@ object SparkBigDataTest {
     // rdd tO DataFrame
     import session_s.implicits._
     val df: DataFrame = rdd_fm.toDF("texte", "valeur")
-    // df.show(50)
-
+    //df.show(50)
 
   }
 
